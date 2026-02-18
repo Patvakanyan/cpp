@@ -1,18 +1,21 @@
 #ifndef PHONEBOOK_HPP
 # define PHONEBOOK_HPP
 
+# include "Contact.hpp"
+# include <cstdlib>
 # include <iomanip>
 # include <iostream>
 # include <string>
-# include "Contact.hpp"
 
 class PhoneBook
 {
-	private:
-		Contact con[8];
-	public:
+  private:
+	Contact con[8];
+
+  public:
 	PhoneBook();
-	void addContact();
+	bool addContact(int &currentIndex, int &countContact);
+	void searchContact(int countContact);
 	~PhoneBook();
 };
 
