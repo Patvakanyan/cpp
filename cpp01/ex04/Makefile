@@ -1,14 +1,11 @@
-NAME	= ex03
+NAME		= ex04
 
-CXX	= c++
+CXX			= c++
 CXXFLAGS	= -Wall -Wextra -Werror -std=c++98
 
-SRCS	= HumanA.cpp \
-		  HumanB.cpp \
-		  Weapon.cpp \
-		  main.cpp
+SRCS		= main.cpp
 
-OBJS	= $(SRCS:.cpp=.o)
+OBJS		= $(SRCS:.cpp=.o)
 
 all: $(NAME)
 
