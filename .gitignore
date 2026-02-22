@@ -1,0 +1,23 @@
+# Compiled object files
+*.o
+*.a
+*.so
+
+# Executables
+megaphone
+phonebook
+replace
+harl
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Dependencies
+*.d
