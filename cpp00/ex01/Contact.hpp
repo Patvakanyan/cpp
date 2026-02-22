@@ -8,11 +8,11 @@
 class Contact
 {
   private:
-	std::string FirstName;
-	std::string LastName;
+	std::string firstName;
+	std::string lastName;
 	std::string nickname;
-	std::string PhoneNumber;
-	std::string DarkestSecret;
+	std::string phoneNumber;
+	std::string darkestSecret;
   public:
 	Contact();
 	Contact(std::string LName, std::string FName, std::string nick,
