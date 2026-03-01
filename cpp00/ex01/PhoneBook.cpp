@@ -88,17 +88,32 @@ void PhoneBook::searchContact(int countConutact)
 	for (int i = 0; i < countConutact; i++)
 		con[i].printContact(i);
 	std::cout << "---------------------------------------------" << std::endl;
-	std::cout << "Enter the index of the contact to view details: ";
 	std::string input;
-	do{
+	while (true)
+	{
+		size_t i;
+		std::cout << "Enter the index of the contact to view details: ";
 		if (!std::getline(std::cin, input))
+		{
+			std::cout << "Error reading input. Please try again." << std::endl;
 			return ;
+		}
 		if (input.empty())
-			return ;
-		if(isdigit(input[0]))
+		{
+			std::cout << "Invalid input. Please try again." << std::endl;
+			continue ;
+		}
+		for (i = 0; i < input.length(); i++)
+		{
+			if (!isdigit(input[i]))
+			{
+				std::cout << "Invalid input. Please try again." << std::endl;
+				break ;
+			}
+		}
+		if (i == input.length())
 			break ;
-		std::cout << "Invalid input. Please enter a valid index: ";
-	} while (!isdigit(input[0]));
+	}
 	index = atoi(input.c_str());
 	if (index < 0 || index >= countConutact)
 	{
