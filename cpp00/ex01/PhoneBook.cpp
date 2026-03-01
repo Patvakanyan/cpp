@@ -8,6 +8,34 @@ PhoneBook::~PhoneBook()
 {
 }
 
+
+bool	addNumberHelper(std::string &input, const std::string &prompt)
+{
+	while (true)
+	{
+		size_t i;
+		std::cout << prompt;
+		if (!std::getline(std::cin, input))
+			return (false);
+		if (input.empty())
+		{
+			std::cout << "Invalid input. Please try again." << std::endl;
+			continue ;
+		}
+		for (i = 0; i < input.length(); i++)
+		{
+			if (!isdigit(input[i]))
+			{
+				std::cout << "Invalid input. Please try again." << std::endl;
+				break ;
+			}
+		}
+		if (i == input.length())
+			break ;
+	}
+	return (true);
+}
+
 bool	addContactHelper(std::string &input, const std::string &prompt)
 {
 	while (true)
@@ -37,7 +65,7 @@ bool PhoneBook::addContact(int &currentIndex, int &countContact)
 		return (false);
 	if (!addContactHelper(darkSecret, "Enter darkest secret: "))
 		return (false);
-	if (!addContactHelper(number, "Enter Phone Number: "))
+	if (!addNumberHelper(number, "Enter Phone Number: "))
 		return (false);
 	PhoneBook::con[currentIndex] = Contact(Lname, Fname, nick, darkSecret,
 			number);
@@ -53,19 +81,24 @@ void PhoneBook::searchContact(int countConutact)
 
 	std::cout << "---------------------------------------------" << std::endl;
 	std::cout << "         Welcome to the PhoneBook App         " << std::endl;
-	std::cout << std::setw(10) << "Index|";
-	std::cout << std::setw(10) << "First Name|";
-	std::cout << std::setw(10) << "Last Name|";
+	std::cout << std::setw(10) << "Index" << "|";
+	std::cout << std::setw(10) << "First Name" << "|";
+	std::cout << std::setw(10) << "Last Name" << "|";
 	std::cout << std::setw(10) << "Nickname" << std::endl;
 	for (int i = 0; i < countConutact; i++)
 		con[i].printContact(i);
 	std::cout << "---------------------------------------------" << std::endl;
 	std::cout << "Enter the index of the contact to view details: ";
 	std::string input;
-	if (!std::getline(std::cin, input))
-		return ;
-	if (input.empty())
-		return ;
+	do{
+		if (!std::getline(std::cin, input))
+			return ;
+		if (input.empty())
+			return ;
+		if(isdigit(input[0]))
+			break ;
+		std::cout << "Invalid input. Please enter a valid index: ";
+	} while (!isdigit(input[0]));
 	index = atoi(input.c_str());
 	if (index < 0 || index >= countConutact)
 	{
