@@ -3,7 +3,7 @@ SRCS := main.cpp \
 		Contact.cpp \
 		PhoneBook.cpp
 OBJS := $(SRCS:.cpp=.o)
-CXX := g++
+CXX := c++
 CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -I.
 RM := rm -f
 
