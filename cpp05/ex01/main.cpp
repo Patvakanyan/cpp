@@ -2,9 +2,6 @@
 #include "Form.hpp"
 #include <iostream>
 
-#include "Bureaucrat.hpp"
-#include "Form.hpp"
-
 int main()
 {
 	std::cout << "=== Create Bureaucrats ===" << std::endl;
