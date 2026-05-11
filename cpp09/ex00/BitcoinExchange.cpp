@@ -42,10 +42,11 @@ static std::pair<std::string, std::string> trem(const std::string &title, std::s
 	return std::make_pair(first, second);
 }
 
-bool BitcoinExchange::checkArgs(const std::string &title, std::string c) const
+bool BitcoinExchange::checkArgs(const std::string &title, std::string c, std::string args) const
 {
 	std::pair<std::string, std::string> title_items = trem(title, c);
-	if (title_items.first == "date" && (title_items.second == "exchange_rate" || title_items.second == "value"))
+	std::pair<std::string, std::string> args_items = trem(args, c);
+	if (title_items.first == args_items.first && (title_items.second == args_items.second || title_items.second == "value"))
 		return true;
 	return false;
 }
@@ -79,7 +80,7 @@ bool BitcoinExchange::parseDate(const std::string &date) const
 		return false;
 	return true;
 }
-void BitcoinExchange::parseInputFile(const std::string &file)
+void BitcoinExchange::parseData(const std::string &file)
 {
 	std::ifstream myFile(file.c_str());
 	std::string line;
@@ -88,11 +89,11 @@ void BitcoinExchange::parseInputFile(const std::string &file)
 		throw std::runtime_error("Error: Could not open file " + file);
 	if (!std::getline(myFile, line))
 		throw std::runtime_error("Error: empty file");
-	if (!checkArgs(line, " | "))
+	if (!checkArgs(line, ",", "date,exchange_rate"))
 		throw std::runtime_error("Error: database header must be 'date,'");
 	while (std::getline(myFile, line))
 	{
-		std::pair<std::string, std::string> tmp = trem(line, " | ");
+		std::pair<std::string, std::string> tmp = trem(line, ",");
 		if (!this->parseDate(tmp.first))
 			throw std::runtime_error("Error: incorrect date");
 		double rate = std::strtod(tmp.second.c_str(), &end);
@@ -105,4 +106,30 @@ void BitcoinExchange::parseInputFile(const std::string &file)
 		this->exchangeRates[tmp.first] = rate;
 	}
 }
-
+void BitcoinExchange::parseInputFile(const std::string &input)
+{
+	std::ifstream myFile(input.c_str());
+	std::string line;
+	if (!myFile.is_open())
+		throw std::runtime_error("Error: Could not open file " + input);
+	if (!std::getline(myFile, line))
+		throw std::runtime_error("Error: empty file");
+	if (!checkArgs(line, " | ", "date | value"))
+		throw std::runtime_error("Error: database header must be 'date,'");
+	while (std::getline(myFile, line))
+	{
+		std::pair<std::string, std::string> tmp = trem(line, " | ");
+		if (!this->parseDate(tmp.first))
+			throw std::runtime_error("Error: incorrect date");
+		char *end;
+		double value = std::strtod(tmp.second.c_str(), &end);
+		if (tmp.second.c_str() == end)
+			throw std::runtime_error("Error: invalid value");
+		if (errno == ERANGE)
+			throw std::runtime_error("Error: value out of range");
+		if (value < 0)
+			throw std::runtime_error("Error: negative value");
+		if (value > 1000)
+			throw std::runtime_error("Error: value too large");
+	}
+}

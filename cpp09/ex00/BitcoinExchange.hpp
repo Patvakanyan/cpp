@@ -14,10 +14,11 @@ class BitcoinExchange
 {
 private:
 	std::map<std::string, double> exchangeRates;
-	bool checkArgs(const std::string &title, std::string c) const;
+	bool checkArgs(const std::string &title, std::string c, std::string args) const;
 	bool isLeapYear(int year) const;
 	int daysInMonth(int year, int month) const;
 	bool parseDate(const std::string &date) const;
+	bool parseInputFile(const std::string &input) const;
 
 public:
 	BitcoinExchange();
