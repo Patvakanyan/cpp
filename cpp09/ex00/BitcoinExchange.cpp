@@ -31,7 +31,7 @@ static std::pair<std::string, std::string> trem(const std::string &title, std::s
 
 	size_t pos = title.find(c);
 	if (pos == std::string::npos)
-		return std::make_pair("", "");
+		return std::make_pair(title, "");
 
 	std::string first = title.substr(start, (pos > start ? pos - start : 0));
 
@@ -70,6 +70,8 @@ int BitcoinExchange::daysInMonth(int year, int month) const
 }
 bool BitcoinExchange::parseDate(const std::string &date) const
 {
+	if (date.length() < 10)
+		return false;
 	int year = std::atoi(date.substr(0, 4).c_str());
 	int month = std::atoi(date.substr(5, 2).c_str());
 	int day = std::atoi(date.substr(8, 2).c_str());
@@ -118,18 +120,39 @@ void BitcoinExchange::parseInputFile(const std::string &input)
 		throw std::runtime_error("Error: database header must be 'date,'");
 	while (std::getline(myFile, line))
 	{
+		if (line.empty())
+			continue;
 		std::pair<std::string, std::string> tmp = trem(line, " | ");
 		if (!this->parseDate(tmp.first))
-			throw std::runtime_error("Error: incorrect date");
+		{
+			std::cerr << "Error: bad input => " << tmp.first << std::endl;
+			continue;
+		}
 		char *end;
 		double value = std::strtod(tmp.second.c_str(), &end);
 		if (tmp.second.c_str() == end)
-			throw std::runtime_error("Error: invalid value");
+		{
+			std::cerr << "Error: invalid value" << std::endl;
+			continue;
+		}
 		if (errno == ERANGE)
-			throw std::runtime_error("Error: value out of range");
+		{
+			std::cerr << "Error: value out of range" << std::endl;
+			continue;
+		}
 		if (value < 0)
-			throw std::runtime_error("Error: negative value");
+		{
+			std::cerr << "Error: negative value" << std::endl;
+			continue;
+		}
 		if (value > 1000)
-			throw std::runtime_error("Error: value too large");
+		{
+			std::cerr << "Error: value too large" << std::endl;
+			continue;
+		}
+		std::map<std::string, double>::const_iterator it = this->exchangeRates.lower_bound(tmp.first);
+		if (it == this->exchangeRates.end())
+			it--;
+		std::cout << tmp.first << " => " << value << " = " << value * it->second << std::endl;
 	}
 }
