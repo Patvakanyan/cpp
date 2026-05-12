@@ -156,8 +156,15 @@ void BitcoinExchange::parseInputFile(const std::string &input)
 			continue;
 		}
 		std::map<std::string, double>::const_iterator it = this->exchangeRates.lower_bound(tmp.first);
-		if (it == this->exchangeRates.end())
+		if (it == this->exchangeRates.end() || it->first != tmp.first)
+		{
+			if (it == this->exchangeRates.begin())
+			{
+				std::cerr << "Error: no valid previous date for => " << tmp.first << std::endl;
+				continue;
+			}
 			it--;
+		}
 		std::cout << tmp.first << " => " << value << " = " << value * it->second << std::endl;
 	}
 }
