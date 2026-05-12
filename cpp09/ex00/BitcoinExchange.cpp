@@ -123,6 +123,11 @@ void BitcoinExchange::parseInputFile(const std::string &input)
 		if (line.empty())
 			continue;
 		std::pair<std::string, std::string> tmp = trem(line, " | ");
+		if (tmp.first.empty() || tmp.second.empty())
+		{
+			std::cerr << "Error: bad input => " << line << std::endl;
+			continue;
+		}
 		if (!this->parseDate(tmp.first))
 		{
 			std::cerr << "Error: bad input => " << tmp.first << std::endl;
@@ -142,12 +147,12 @@ void BitcoinExchange::parseInputFile(const std::string &input)
 		}
 		if (value < 0)
 		{
-			std::cerr << "Error: negative value" << std::endl;
+			std::cerr << "Error: not a positive number." << std::endl;
 			continue;
 		}
 		if (value > 1000)
 		{
-			std::cerr << "Error: value too large" << std::endl;
+			std::cerr << "Error: too large a number." << std::endl;
 			continue;
 		}
 		std::map<std::string, double>::const_iterator it = this->exchangeRates.lower_bound(tmp.first);

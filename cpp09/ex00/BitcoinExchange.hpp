@@ -9,6 +9,8 @@
 #include <stdexcept>
 #include <iomanip>
 #include <cstdlib>
+#include <cerrno>
+#include <cctype>
 
 class BitcoinExchange
 {
@@ -18,7 +20,6 @@ private:
 	bool isLeapYear(int year) const;
 	int daysInMonth(int year, int month) const;
 	bool parseDate(const std::string &date) const;
-	bool parseInputFile(const std::string &input) const;
 
 public:
 	BitcoinExchange();
