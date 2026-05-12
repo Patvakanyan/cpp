@@ -9,6 +9,8 @@
 #include <stdexcept>
 #include <iomanip>
 #include <cstdlib>
+#include <cctype>
+#include <cerrno>
 
 class BitcoinExchange
 {
