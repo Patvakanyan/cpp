@@ -70,6 +70,15 @@ int BitcoinExchange::daysInMonth(int year, int month) const
 }
 bool BitcoinExchange::parseDate(const std::string &date) const
 {
+	if (date.size() != 10 || date[4] != '-' || date[7] != '-')
+		return false;
+	for (size_t i = 0; i < date.size(); ++i)
+	{
+		if (i == 4 || i == 7)
+			continue;
+		if (!std::isdigit(static_cast<unsigned char>(date[i])))
+			return false;
+	}
 	int year = std::atoi(date.substr(0, 4).c_str());
 	int month = std::atoi(date.substr(5, 2).c_str());
 	int day = std::atoi(date.substr(8, 2).c_str());
@@ -96,6 +105,7 @@ void BitcoinExchange::parseData(const std::string &file)
 		std::pair<std::string, std::string> tmp = trem(line, ",");
 		if (!this->parseDate(tmp.first))
 			throw std::runtime_error("Error: incorrect date");
+		errno = 0;
 		double rate = std::strtod(tmp.second.c_str(), &end);
 		if (tmp.second.c_str() == end)
 			throw std::runtime_error("Error: invalid exchange rate");
@@ -122,6 +132,7 @@ void BitcoinExchange::parseInputFile(const std::string &input)
 		if (!this->parseDate(tmp.first))
 			throw std::runtime_error("Error: incorrect date");
 		char *end;
+		errno = 0;
 		double value = std::strtod(tmp.second.c_str(), &end);
 		if (tmp.second.c_str() == end)
 			throw std::runtime_error("Error: invalid value");
